@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memory-monitor-backend
+  namespace: nano-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memory-monitor-backend
+  template:
+    metadata:
+      labels:
+        app: memory-monitor-backend
+    spec:
+      containers:
+      - name: backend
+        image: localhost:5000/memory-monitor-backend:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        volumeMounts:
+        - name: proc
+          mountPath: /proc
+          readOnly: true
+      volumes:
+      - name: proc
+        hostPath:
+          path: /proc
+          type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: memory-monitor-backend
+  namespace: nano-system
+spec:
+  selector:
+    app: memory-monitor-backend
+  ports:
+  - port: 8000
+    targetPort: 8000
