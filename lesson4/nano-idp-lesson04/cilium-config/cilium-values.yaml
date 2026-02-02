@@ -1,0 +1,59 @@
+# Nano-IDP Cilium Configuration
+# Target: 180MB total (vs 850MB default)
+
+# CRITICAL: Disable Hubble entirely (Saves 400MB)
+hubble:
+  enabled: false
+  relay:
+    enabled: false
+  ui:
+    enabled: false
+  metrics:
+    enabled: []
+
+# Operator tuning (Saves 240MB)
+operator:
+  replicas: 1
+  resources:
+    requests:
+      memory: "40Mi"
+      cpu: "50m"
+    limits:
+      memory: "60Mi"
+      cpu: "200m"
+
+# Agent resource constraints (Saves 392MB)
+resources:
+  requests:
+    memory: "80Mi"
+    cpu: "100m"
+  limits:
+    memory: "120Mi"
+    cpu: "500m"
+
+# eBPF memory optimizations (Saves 160MB)
+bpf:
+  preallocate: false
+  monitorAggregation: "maximum"
+  mapDynamicSizeRatio: 0.0025
+
+# Networking efficiency
+tunnel: "disabled"
+ipam:
+  mode: "kubernetes"
+autoDirectNodeRoutes: true
+ipv4NativeRoutingCIDR: "10.42.0.0/16"
+
+# Disable unnecessary features
+enableIPv6: false
+kubeProxyReplacement: "disabled"
+enableRuntimeDeviceDetection: false
+enableXTSocketFallback: false
+
+# Minimal monitoring
+prometheus:
+  enabled: false
+  
+# Security context
+securityContext:
+  privileged: true
