@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cgroup v2 Monitor Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .dashboard {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        input, button {
+            padding: 12px 20px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        input {
+            flex: 1;
+            min-width: 200px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .status.ok { background: #d4edda; color: #155724; }
+        .status.warning { background: #fff3cd; color: #856404; }
+        .status.critical { background: #f8d7da; color: #721c24; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        .pressure-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .pressure-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .pressure-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .pressure-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .pressure-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .pressure-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+        }
+        .auto-refresh {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .auto-refresh input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .auto-refresh label {
+            color: #333;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 cgroup v2 Monitor Dashboard</h1>
+        <div class="dashboard">
+            <div class="controls">
+                <input type="text" id="podName" placeholder="Enter pod name (e.g., memory-hog)" value="memory-hog">
+                <button onclick="fetchMetrics()">Fetch Metrics</button>
+                <button onclick="checkHealth()">Check Health</button>
+            </div>
+            <div class="auto-refresh">
+                <input type="checkbox" id="autoRefresh" onchange="toggleAutoRefresh()">
+                <label for="autoRefresh">Auto-refresh (5s)</label>
+            </div>
+            <div id="status" class="status" style="display:none;"></div>
+            <div id="metrics" class="metrics-grid"></div>
+            <div id="pressure" class="pressure-section" style="display:none;">
+                <h3>Pressure Stall Information (PSI)</h3>
+                <div id="pressureMetrics" class="pressure-metrics"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const API_BASE = window.location.origin;
+        let autoRefreshInterval = null;
+
+        function formatBytes(bytes) {
+            if (!bytes) return 'N/A';
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(1024));
+            return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+            statusEl.style.display = 'block';
+        }
+
+        async function checkHealth() {
+            try {
+                const response = await fetch(`${API_BASE}/api/health`);
+                const data = await response.json();
+                if (data.status === 'ok') {
+                    showStatus(`✅ cgroup v2 Available - Controllers: ${data.controllers.join(', ')}`, 'ok');
+                } else {
+                    showStatus(`❌ ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function fetchMetrics() {
+            const podName = document.getElementById('podName').value.trim();
+            if (!podName) {
+                showStatus('❌ Please enter a pod name', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/memory-stats/${podName}`);
+                if (!response.ok) {
+                    const error = await response.json();
+                    showStatus(`❌ ${error.detail || 'Pod not found'}`, 'error');
+                    document.getElementById('metrics').innerHTML = '';
+                    document.getElementById('pressure').style.display = 'none';
+                    return;
+                }
+
+                const data = await response.json();
+                displayMetrics(data);
+                showStatus(`✅ Metrics updated for pod: ${podName}`, data.health_status);
+            } catch (error) {
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        function displayMetrics(data) {
+            const metricsEl = document.getElementById('metrics');
+            metricsEl.innerHTML = `
+                <div class="metric-card">
+                    <div class="metric-label">Current Memory</div>
+                    <div class="metric-value">${formatBytes(data.current_bytes)}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Memory Limit</div>
+                    <div class="metric-value">${formatBytes(data.max_bytes)}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">High Watermark</div>
+                    <div class="metric-value">${formatBytes(data.high_bytes)}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Health Status</div>
+                    <div class="metric-value">${data.health_status.toUpperCase()}</div>
+                </div>
+            `;
+
+            if (data.pressure) {
+                const pressureEl = document.getElementById('pressure');
+                const pressureMetricsEl = document.getElementById('pressureMetrics');
+                pressureEl.style.display = 'block';
+                pressureMetricsEl.innerHTML = `
+                    <div class="pressure-item">
+                        <div class="pressure-label">Some Avg10</div>
+                        <div class="pressure-value">${data.pressure.some_avg10.toFixed(2)}%</div>
+                    </div>
+                    <div class="pressure-item">
+                        <div class="pressure-label">Some Avg60</div>
+                        <div class="pressure-value">${data.pressure.some_avg60.toFixed(2)}%</div>
+                    </div>
+                    <div class="pressure-item">
+                        <div class="pressure-label">Full Avg10</div>
+                        <div class="pressure-value">${data.pressure.full_avg10.toFixed(2)}%</div>
+                    </div>
+                    <div class="pressure-item">
+                        <div class="pressure-label">Full Avg60</div>
+                        <div class="pressure-value">${data.pressure.full_avg60.toFixed(2)}%</div>
+                    </div>
+                    <div class="pressure-item">
+                        <div class="pressure-label">Total Stall Time</div>
+                        <div class="pressure-value">${(data.pressure.total_stall_time_us / 1000).toFixed(2)} ms</div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('pressure').style.display = 'none';
+            }
+        }
+
+        function toggleAutoRefresh() {
+            const checkbox = document.getElementById('autoRefresh');
+            if (checkbox.checked) {
+                autoRefreshInterval = setInterval(fetchMetrics, 5000);
+            } else {
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                    autoRefreshInterval = null;
+                }
+            }
+        }
+
+        // Initial health check
+        checkHealth();
+    </script>
+</body>
+</html>

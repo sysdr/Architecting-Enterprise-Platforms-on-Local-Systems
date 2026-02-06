@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cgroupv2-monitor
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cgroupv2-monitor
+  template:
+    metadata:
+      labels:
+        app: cgroupv2-monitor
+    spec:
+      containers:
+      - name: api
+        image: localhost:5000/cgroupv2-monitor:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        volumeMounts:
+        - name: cgroup
+          mountPath: /sys/fs/cgroup
+          readOnly: true
+      volumes:
+      - name: cgroup
+        hostPath:
+          path: /sys/fs/cgroup
+          type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cgroupv2-monitor
+  namespace: monitoring
+spec:
+  selector:
+    app: cgroupv2-monitor
+  ports:
+  - port: 80
+    targetPort: 8000
+  type: ClusterIP
