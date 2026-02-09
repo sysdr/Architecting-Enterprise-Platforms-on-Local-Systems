@@ -1,0 +1,255 @@
+---
+# Namespace (using kube-system to minimize resource overhead)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kube-system
+---
+# ServiceAccount
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nginx-ingress
+  namespace: kube-system
+---
+# ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: nginx-ingress
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - endpoints
+      - nodes
+      - pods
+      - secrets
+      - namespaces
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingresses/status
+    verbs:
+      - update
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingressclasses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - list
+      - watch
+      - get
+      - update
+      - create
+  - apiGroups:
+      - discovery.k8s.io
+    resources:
+      - endpointslices
+    verbs:
+      - get
+      - list
+      - watch
+---
+# ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: nginx-ingress
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: nginx-ingress
+subjects:
+  - kind: ServiceAccount
+    name: nginx-ingress
+    namespace: kube-system
+---
+# ConfigMap for nginx tuning
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-configuration
+  namespace: kube-system
+data:
+  # Core worker tuning
+  worker-processes: "1"
+  worker-shutdown-timeout: "10s"
+  
+  # Buffer optimization
+  client-body-buffer-size: "16k"
+  client-max-body-size: "2m"
+  large-client-header-buffers: "2 4k"
+  proxy-buffer-size: "4k"
+  proxy-buffers: "4 4k"
+  proxy-buffering: "on"
+  
+  # Connection limits
+  worker-connections: "256"
+  keepalive-requests: "100"
+  keepalive-timeout: "65"
+  
+  # Performance tuning
+  upstream-keepalive-connections: "32"
+  upstream-keepalive-timeout: "60"
+  upstream-keepalive-requests: "100"
+  
+  # Disable unnecessary features
+  enable-dynamic-configuration: "false"
+  
+  # Logging (minimal)
+  error-log-level: "error"
+  disable-access-log: "true"
+  
+  # Security headers (lightweight)
+  hide-headers: "Server,X-Powered-By"
+---
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-ingress-controller
+  namespace: kube-system
+  labels:
+    app: nginx-ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-ingress
+  template:
+    metadata:
+      labels:
+        app: nginx-ingress
+    spec:
+      serviceAccountName: nginx-ingress
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: controller
+        image: registry.k8s.io/ingress-nginx/controller:v1.9.4
+        args:
+          - /nginx-ingress-controller
+          - --ingress-class=nginx-lite
+          - --configmap=$(POD_NAMESPACE)/nginx-configuration
+          - --election-id=ingress-controller-leader-nginx-lite
+          - --controller-class=k8s.io/nginx-lite
+          - --watch-ingress-without-class=false
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: LD_PRELOAD
+          value: /usr/local/lib/libmimalloc.so
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        - name: https
+          containerPort: 443
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 10254
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 10254
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        resources:
+          requests:
+            memory: "90Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        securityContext:
+          allowPrivilegeEscalation: true
+          capabilities:
+            drop:
+            - ALL
+            add:
+            - NET_BIND_SERVICE
+          runAsUser: 101
+---
+# Service (NodePort for local access)
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ingress
+  namespace: kube-system
+  labels:
+    app: nginx-ingress
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
+    nodePort: 30080
+  - name: https
+    port: 443
+    targetPort: 443
+    protocol: TCP
+    nodePort: 30443
+  selector:
+    app: nginx-ingress
