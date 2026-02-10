@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: storage-quota
+  namespace: storage-demo
+spec:
+  hard:
+    persistentvolumeclaims: "5"
+    requests.storage: "10Gi"

@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: storage-monitor
+  namespace: storage-demo
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: storage-monitor-reader
+rules:
+- apiGroups: [""]
+  resources: ["persistentvolumes", "persistentvolumeclaims"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: storage-monitor-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: storage-monitor-reader
+subjects:
+- kind: ServiceAccount
+  name: storage-monitor
+  namespace: storage-demo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storage-monitor
+  namespace: storage-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: storage-monitor
+  template:
+    metadata:
+      labels:
+        app: storage-monitor
+    spec:
+      serviceAccountName: storage-monitor
+      containers:
+      - name: backend
+        image: localhost:5000/storage-monitor-backend:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        volumeMounts:
+        - name: proc
+          mountPath: /host/proc
+          readOnly: true
+      volumes:
+      - name: proc
+        hostPath:
+          path: /proc
+          type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage-monitor
+  namespace: storage-demo
+spec:
+  selector:
+    app: storage-monitor
+  ports:
+  - port: 80
+    targetPort: 8000

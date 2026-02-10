@@ -1,0 +1,142 @@
+:root {
+  --bg: #0a0e27;
+  --card-bg: #1a1f3a;
+  --border: #2a3150;
+  --text: #e0e7ff;
+  --text-dim: #94a3b8;
+  --accent: #3b82f6;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+header {
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--accent);
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  padding: 0.75rem;
+  border-bottom: 2px solid var(--border);
+  color: var(--text-dim);
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+
+td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.mono {
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+}
+
+.small {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status.bound {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--success);
+}
+
+.status.available {
+  background: rgba(59, 130, 246, 0.2);
+  color: var(--accent);
+}
+
+.status.pending {
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--warning);
+}
+
+.iostat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.iostat-card {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.iostat-card h3 {
+  margin-bottom: 0.75rem;
+  color: var(--accent);
+  font-family: monospace;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.875rem;
+}
+
+.stat:last-child {
+  border-bottom: none;
+}
+
+.stat .value {
+  font-weight: 600;
+  color: var(--accent);
+}
