@@ -1,0 +1,27 @@
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: platform-critical
+value: 1000000
+globalDefault: false
+preemptionPolicy: PreemptLowerPriority
+description: "For platform components that must never be evicted (CoreDNS, CNI)"
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: platform-core
+value: 10000
+globalDefault: false
+preemptionPolicy: PreemptLowerPriority
+description: "For essential platform services (Ingress, ArgoCD, vCluster)"
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: tenant-default
+value: 0
+globalDefault: true
+preemptionPolicy: Never
+description: "For tenant workloads - first to be evicted during OOM"

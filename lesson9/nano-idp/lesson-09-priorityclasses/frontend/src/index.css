@@ -1,0 +1,183 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: #0f0f0f;
+  color: #e0e0e0;
+  line-height: 1.6;
+}
+
+#root {
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #333;
+  padding-bottom: 1rem;
+}
+
+.header h1 {
+  font-size: 2rem;
+  color: #00ff88;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  color: #888;
+  font-size: 0.95rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.stat-card h3 {
+  font-size: 0.875rem;
+  color: #888;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.stat-card .value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #00ff88;
+}
+
+.section {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.section h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: #00ff88;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #0a0a0a;
+}
+
+th {
+  padding: 0.75rem;
+  text-align: left;
+  font-size: 0.875rem;
+  color: #888;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+td {
+  padding: 0.75rem;
+  border-top: 1px solid #333;
+}
+
+tr:hover {
+  background: #222;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.badge-critical {
+  background: #ff3860;
+  color: white;
+}
+
+.badge-core {
+  background: #ffb86c;
+  color: #000;
+}
+
+.badge-tenant {
+  background: #666;
+  color: white;
+}
+
+.badge-running {
+  background: #00ff88;
+  color: #000;
+}
+
+.badge-pending {
+  background: #ffb86c;
+  color: #000;
+}
+
+.badge-failed {
+  background: #ff3860;
+  color: white;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: #888;
+  font-size: 1.1rem;
+}
+
+.error {
+  background: #ff3860;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+button {
+  background: #00ff88;
+  color: #000;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+button:hover {
+  background: #00dd77;
+  transform: translateY(-2px);
+}
+
+button:disabled {
+  background: #333;
+  color: #666;
+  cursor: not-allowed;
+  transform: none;
+}

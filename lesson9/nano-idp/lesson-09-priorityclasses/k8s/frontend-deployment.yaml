@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: priority-monitor-frontend
+  namespace: priority-monitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: priority-monitor-frontend
+  template:
+    metadata:
+      labels:
+        app: priority-monitor-frontend
+    spec:
+      priorityClassName: platform-core
+      containers:
+      - name: nginx
+        image: localhost:5000/priority-monitor-frontend:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "25m"
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: priority-monitor-frontend
+  namespace: priority-monitor
+spec:
+  selector:
+    app: priority-monitor-frontend
+  ports:
+  - port: 80
+    targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: priority-monitor
+  namespace: priority-monitor
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: priority.nano-idp.local
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: priority-monitor-backend
+            port:
+              number: 8080
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: priority-monitor-frontend
+            port:
+              number: 80

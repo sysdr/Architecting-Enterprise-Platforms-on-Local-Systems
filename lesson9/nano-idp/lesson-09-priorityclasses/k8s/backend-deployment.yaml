@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: priority-monitor
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: priority-monitor-backend
+  namespace: priority-monitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: priority-monitor-backend
+  template:
+    metadata:
+      labels:
+        app: priority-monitor-backend
+    spec:
+      priorityClassName: platform-core
+      serviceAccountName: priority-monitor
+      containers:
+      - name: api
+        image: localhost:5000/priority-monitor-backend:latest
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: priority-monitor-backend
+  namespace: priority-monitor
+spec:
+  selector:
+    app: priority-monitor-backend
+  ports:
+  - port: 8080
+    targetPort: 8080
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: priority-monitor
+  namespace: priority-monitor
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: priority-monitor-reader
+rules:
+- apiGroups: [""]
+  resources: ["pods", "nodes"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["scheduling.k8s.io"]
+  resources: ["priorityclasses"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["metrics.k8s.io"]
+  resources: ["pods", "nodes"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: priority-monitor-reader
+subjects:
+- kind: ServiceAccount
+  name: priority-monitor
+  namespace: priority-monitor
+roleRef:
+  kind: ClusterRole
+  name: priority-monitor-reader
+  apiGroup: rbac.authorization.k8s.io

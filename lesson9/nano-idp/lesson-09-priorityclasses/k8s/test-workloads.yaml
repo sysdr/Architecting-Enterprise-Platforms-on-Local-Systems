@@ -1,0 +1,45 @@
+# Memory bomb - low priority tenant workload
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memory-bomb-1
+  namespace: default
+  labels:
+    app: memory-test
+spec:
+  priorityClassName: tenant-default
+  containers:
+  - name: stress
+    image: polinux/stress
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "100m"
+      limits:
+        memory: "512Mi"
+        cpu: "200m"
+    command: ["stress"]
+    args: ["--vm", "1", "--vm-bytes", "500M", "--vm-hang", "0"]
+---
+# Second memory bomb
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memory-bomb-2
+  namespace: default
+  labels:
+    app: memory-test
+spec:
+  priorityClassName: tenant-default
+  containers:
+  - name: stress
+    image: polinux/stress
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "100m"
+      limits:
+        memory: "512Mi"
+        cpu: "200m"
+    command: ["stress"]
+    args: ["--vm", "1", "--vm-bytes", "500M", "--vm-hang", "0"]

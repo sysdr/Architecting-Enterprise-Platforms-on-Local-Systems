@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Priority Monitor - UI Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0f0f0f;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        #root {
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #333;
+            padding-bottom: 1rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: #00ff88;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .stat-card h3 {
+            font-size: 0.875rem;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .section {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: #00ff88;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #0a0a0a;
+        }
+
+        th {
+            padding: 0.75rem;
+            text-align: left;
+            font-size: 0.875rem;
+            color: #888;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0.75rem;
+            border-top: 1px solid #333;
+        }
+
+        tr:hover {
+            background: #222;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .badge-critical {
+            background: #ff3860;
+            color: white;
+        }
+
+        .badge-core {
+            background: #ffb86c;
+            color: #000;
+        }
+
+        .badge-tenant {
+            background: #666;
+            color: white;
+        }
+
+        .badge-running {
+            background: #00ff88;
+            color: #000;
+        }
+
+        .badge-pending {
+            background: #ffb86c;
+            color: #000;
+        }
+
+        .badge-failed {
+            background: #ff3860;
+            color: white;
+        }
+
+        button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #00dd77;
+            transform: translateY(-2px);
+        }
+
+        .preview-note {
+            background: #ffb86c;
+            color: #000;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="container">
+            <div class="preview-note">
+                📸 UI Preview - This is what the Priority Monitor dashboard looks like
+            </div>
+
+            <div class="header">
+                <h1>🎯 Priority Monitor</h1>
+                <p>Lesson 9: PriorityClasses - OOM Killer Control</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Pods</h3>
+                    <div class="value">13</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Priority Classes</h3>
+                    <div class="value">5</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Running Pods</h3>
+                    <div class="value">9</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Auto-Refresh</h3>
+                    <button>ON</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Priority Classes</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Priority Value</th>
+                            <th>Global Default</th>
+                            <th>Preemption Policy</th>
+                            <th>Pod Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge badge-critical">system-node-critical</span></td>
+                            <td>2,000,001,000</td>
+                            <td>—</td>
+                            <td>PreemptLowerPriority</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-critical">system-cluster-critical</span></td>
+                            <td>2,000,000,000</td>
+                            <td>—</td>
+                            <td>PreemptLowerPriority</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-critical">platform-critical</span></td>
+                            <td>1,000,000</td>
+                            <td>—</td>
+                            <td>PreemptLowerPriority</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-core">platform-core</span></td>
+                            <td>10,000</td>
+                            <td>—</td>
+                            <td>PreemptLowerPriority</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-tenant">tenant-default</span></td>
+                            <td>0</td>
+                            <td>✓</td>
+                            <td>Never</td>
+                            <td>6</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>Pod Priority Assignments</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pod Name</th>
+                            <th>Namespace</th>
+                            <th>Priority Class</th>
+                            <th>Priority Value</th>
+                            <th>Status</th>
+                            <th>Memory</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>local-path-provisioner-6f5d79df6-nfgxn</td>
+                            <td>kube-system</td>
+                            <td><span class="badge badge-critical">system-node-critical</span></td>
+                            <td>2,000,001,000</td>
+                            <td><span class="badge badge-running">Running</span></td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>metrics-server-54fd9b65b-nkdzg</td>
+                            <td>kube-system</td>
+                            <td><span class="badge badge-critical">system-node-critical</span></td>
+                            <td>2,000,001,000</td>
+                            <td><span class="badge badge-running">Running</span></td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>svclb-traefik-e8c0fddd-j9m8r</td>
+                            <td>kube-system</td>
+                            <td><span class="badge badge-critical">system-node-critical</span></td>
+                            <td>2,000,001,000</td>
+                            <td><span class="badge badge-running">Running</span></td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>traefik-7d5f6474df-f46mc</td>
+                            <td>kube-system</td>
+                            <td><span class="badge badge-critical">system-cluster-critical</span></td>
+                            <td>2,000,000,000</td>
+                            <td><span class="badge badge-running">Running</span></td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>coredns-56dc47fbfb-dv2n6</td>
+                            <td>kube-system</td>
+                            <td><span class="badge badge-critical">platform-critical</span></td>
+                            <td>1,000,000</td>
+                            <td><span class="badge badge-running">Running</span></td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>priority-monitor-backend-648c86fd7d-r8xl9</td>
+                            <td>priority-monitor</td>
+                            <td><span class="badge badge-core">platform-core</span></td>
+                            <td>10,000</td>
+                            <td><span class="badge badge-pending">Pending</span></td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>priority-monitor-frontend-6c7846886-kwxzg</td>
+                            <td>priority-monitor</td>
+                            <td><span class="badge badge-core">platform-core</span></td>
+                            <td>10,000</td>
+                            <td><span class="badge badge-pending">Pending</span></td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>test-backend-55bbbfbb56-zsrrk</td>
+                            <td>default</td>
+                            <td><span class="badge badge-tenant">tenant-default</span></td>
+                            <td>0</td>
+                            <td><span class="badge badge-running">Running</span></td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>nginx-ingress-controller-759c566464-h4c5s</td>
+                            <td>kube-system</td>
+                            <td><span class="badge badge-tenant">tenant-default</span></td>
+                            <td>0</td>
+                            <td><span class="badge badge-running">Running</span></td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>cgroupv2-monitor-848c6f8956-w66zm</td>
+                            <td>monitoring</td>
+                            <td><span class="badge badge-tenant">tenant-default</span></td>
+                            <td>0</td>
+                            <td><span class="badge badge-running">Running</span></td>
+                            <td>N/A</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
