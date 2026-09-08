@@ -1,63 +1,107 @@
-## **Course Details**
+# Architecting Enterprise Platforms on Local Systems
 
-[Check Course Curriculum](https://systemdrd.com/courses/architecting-enterprise-local-system-design/).
+**3 full lessons from this course are free to read — no signup, no card.** This repository holds the working code for those lessons.
 
-### **Why This Course?**
+[![Free lessons](https://img.shields.io/badge/free_lessons-3-16703E?style=flat-square)](https://systemdrd.com/courses/system-design-architecting-enterprise/?utm_source=github&utm_medium=readme&utm_campaign=architecting-enterprise-platforms-on-local-systems) [![Course](https://img.shields.io/badge/full_course-80_lessons-D92B21?style=flat-square)](https://systemdrd.com/courses/system-design-architecting-enterprise/?utm_source=github&utm_medium=readme&utm_campaign=architecting-enterprise-platforms-on-local-systems) [![Topic](https://img.shields.io/badge/Backend_Engineering-informational?style=flat-square)](https://systemdrd.com/courses/system-design-architecting-enterprise/?utm_source=github&utm_medium=readme&utm_campaign=architecting-enterprise-platforms-on-local-systems)
 
-Look, anyone can build a platform with an unlimited cloud budget and a 100-node cluster. That doesn't teach you engineering; that teaches you spending. True mastery comes from constraints.
+## Start with the free lessons
 
-I’ve interviewed hundreds of "Senior" engineers who can run a Terraform script but have no idea why their pods are getting OOMKilled or how the Linux kernel handles memory pressure. In this course, we simulate the friction, resource contention, and architectural trade-offs of a massive enterprise environment, but we do it entirely on your local 8GB laptop. By forcing a production-grade Internal Developer Platform (IDP) into a constrained memory budget, you will learn optimization strategies that most "cloud-native" engineers never encounter until they take down production. We aren't just running scripts; we are engineering a substrate.
+Each lesson is the same one a paying subscriber reads — the full text, not a preview. The code for it is in this repository.
 
-### **What You’ll Build**
+| | Read the lesson | Code in this repo |
+|---|---|---|
+| **Day 1** | [The 8GB Budget: Why Your Kubernetes Tutorial Is Lying To You](https://systemdrd.com/lessons/ai-agents-hands-on-system-design/?utm_source=github&utm_medium=readme&utm_campaign=architecting-enterprise-platforms-on-local-systems) | [`lesson1/`](lesson1) |
+| **Day 2** | [OS Tuning – Why Your Kernel Is Sabotaging Your 8GB IDP](https://systemdrd.com/lessons/ai-agents-course/?utm_source=github&utm_medium=readme&utm_campaign=architecting-enterprise-platforms-on-local-systems) | [`lesson2/`](lesson2) |
+| **Day 3** | [K3d Minimalist Boot: Surgical Component Removal](https://systemdrd.com/lessons/hands-on-system-design-2/?utm_source=github&utm_medium=readme&utm_campaign=architecting-enterprise-platforms-on-local-systems) | [`lesson3/`](lesson3) |
 
-You will engineer **The Nano-IDP**, a fully functional, multi-tenant platform capability of supporting hypothetical feature teams. It includes:
+## The rest of the course — 80 lessons
 
-* **Substrate:** A tuned K3d cluster running Cilium eBPF networking (stripped of heavy sidecars).  
-* **Control Plane:** An ArgoCD-driven GitOps engine optimized for low-memory footprints.  
-* **Infrastructure Engine:** A Crossplane implementation delivering "Infrastructure as Data" using Python logic.  
-* **Tenancy Model:** Hard isolation using vCluster to spin up ephemeral virtual clusters that "sleep" when idle.  
-* **The Portal:** A bespoke **Python (FastAPI) and React** Developer Portal that replaces heavy off-the-shelf tools like Backstage.  
-* **Resilience:** Self-healing capabilities tested against real chaos (network latency, pod failure).
+<details><summary>Full curriculum (80 lessons)</summary>
 
-### **Who Should Take This Course?**
+- Day 1: The 8GB Budget: Why Your Kubernetes Tutorial Is Lying To You — **free, above**
+- Day 2 : OS Tuning – Why Your Kernel Is Sabotaging Your 8GB IDP — **free, above**
+- Day 3 : K3d Minimalist Boot: Surgical Component Removal — **free, above**
+- Day 4: The CNI Choice – Flannel vs. Cilium on 8GB RAM
+- Day 5: Kernel Tuning – The max_map_count Trap
+- Day 6 : Container Runtimes – The cgroup v2 Upgrade for Memory Survival
+- Day 7 : Ingress Lite – Nginx Without the Bloat
+- Day 8: Storage on a Budget – Local-Path + Host SSD
+- Day 9 : PriorityClasses – The OOM Killer’s Instruction Manual
+- Day 10 : LimitRanges – The 8GB Survival Firewall
+- Day 11: The OOM Killer- Your Server’s last Resort Bouncer
+- Day 12: Substrate Freeze-Mastering System Quiescence on Local Systems
+- Day 13: ArgoCD Core
+- Day 14: Tuning Your Repo Server – Mastering Local Resource Dynamics
+- Day 15: The App of Apps – Orchestrating Your Local Enterprise Platform
+- Day 16: Sync Waves – Orchestrating Chaos into Order
+- Day 17: Resource Exclusion – Taming the Chaos on Your Local Machine
+- Day 18: Zombie Cleanup – Reclaiming Your System’s Soul
+- Day 19: Python Generators: The Unsung Heroes of Resource-Constrained Systems
+- Day 20: Secrets (ESO Lite) – Guarding Your Crown Jewels
+- Day 21: RBAC Strategies – Building Guardrails on Your Own Turf
+- Day 22: Self-Healing on Local Systems – The Watchdog Principal
+- Day 23: Debugging Sync Loops – Unmasking the Silent Killers of Control Planes
+- Day 24: Notification Hooks – The Art of Decoupled Communication
+- Day 25: On-Demand UI
+- Day 26: Crossplane Families – Building Your Own Infrastructure APIs
+- Day 27: Reconcile Tuning
+- Day 28: Composition Functions – The Unsung Heroes of Enterprise Platforms
+- Day 29: Writing Logic – The Art of Resilient Event Processing (Local Systems Edition)
+- Day 30: The Docker Runner – Mastering Local Enterprise Orchestration
+- Day 31: Defining XRDs- Crafting Your Platfom’s Core Language
+- Day 32: Local Mocking – Building Your Own Reality
+- Day 33: Unit Testing(Day 1) – Building Confidence, Not Clusters
+- Day 34: Secret Injection – The Unseen Hand that Feeds Your App
+- Day 35: Environment Switching – The unseen Architect of Robust Systems
+- Day 36: Handling Drift – The Silent Killer of Enterprise Stability
+- Day 37: The Silent Killer – Unmasking I/O Bottlenecks on Your Local Enterprise Platform
+- Day 38: Packaging – The Art of the Self-Contained System
+- Day 39: Local Registry – Own Your Images, Master Your Platform
+- Day 40: Consuming the API – Building Resilient Clients in a Constrained World
+- Day 41: Provider Helm – Architecture Declarative Application Management
+- Day 42: SQL Schema Mgmt (The Unsung Hero of Local Enterprise)
+- Day 43: Validation (Kuttl) -Mastering Kubernetes State on Local Systems
+- Day 44: Policy Fields – The Unsung Heroes of Dynamic Enterprise Platforms
+- Day 45: API Publication – Your Local Gateway: The First Line of Defense
+- Day 46: The RPE Trilemma: Unmasking Core Trade-Offs in Confined Spaces
+- Day 47: vCluster Internals – The Art of Nested Abstraction
+- Day 48: First Tenant – The Art of Constrained Isolation
+- Day 49: The Invisible Wires – Unmasking vCluster Networking on Local Systems
+- Day 50: Ingress Syncing – The Local Traffic Orchestrator
+- Day 51: Resource Quotas – The Unseen Hand That Governs Your Enterprise
+- Day 52: Sleep Mode – Mastering Resource Hibernation for Lean Enterprise Platforms
+- Day 53: Tenant GitOps – Mastering Local Configuration Consistency
+- Day 54: Custom Operators – Orchestrating Your Local Universe
+- Day 55: Kyverno Lite – Mastering Local Policy Enforcement for Enterprise Resilience
+- Day 56: Validation Policies – The Unsung Heroes of System Resilience
+- Day 57: Mutating Policies – The Art of Runtime Adaptability on Constrained Systems
+- Day 58: The Unseen Power of Generation Rules – Crafting Identifiers for Scalable Local Systems
+- Day 59: Reporting – The Unsung Hero (and Silent Killer) of Enterprise Platforms
+- Day 60: The Unseen Lifeline – Architecting Break – Glass on Local Systems
+- Day 61: The Art of Local Resource Isolation & Adaptive Backpressure
+- Day 62: Installing Argo Rollouts for Progressive Delivery
+- Day 63: Minimal-Downtime Database Schema Migration on Local Systems
+- Day 64: Blue/Green Deployments on a Shoestring Budget
+- Day 65: Canary Steps
+- Day 66: Mastering Local Ingress – The Gatekeeper on Your Machine
+- Day 67: Architecting Resilient AnalysisRuns on Local Systems
+- Day 68: The Unseen Pulse – Building a Local Metrics Backbone
+- Day 69: Success Queries – The Unseen Hand of Local Observability
+- Day 70: Auto-Rollback : The Unsung Hero of High Availability
+- …and 10 more
 
-* **Platform Engineers** who need to move beyond "installing tools" to "architecting systems."  
-* **Python/React Developers** who want to break into Platform Engineering but feel intimidated by the "Java/Go" heavy ecosystem.  
-* **SREs** who need to understand the internal mechanics of the platforms they operate.  
-* **Software Architects** designing systems where cost and efficiency are first-class citizens.  
-* **Students & Fresh Grads** who want to build a portfolio project that actually proves they understand system internals.
+</details>
 
-### **What Makes This Course Different?**
+## Get the whole course
 
-* **The 8GB Constraint:** We don't handwave resource usage. We optimize JVM heaps, tune control plane memory, and strip unused CRDs to make it fit. This mimics the "Cost Awareness" required in real FinOps environments.  
-* **Everyday Code:** No slides. Every lesson ends with a commit. If it doesn't run on your laptop, it doesn't count.  
-* **No "Black Box" Magic:** We don't use managed services. We build the "glue" ourselves using Python and eBPF.  
-* **Failure-Driven:** We will intentionally break things—induce split-brain scenarios, fill disks, and cause sync loops—so you know how to fix them when it matters.
+**$199 one-off.** No subscription.
 
-### **Key Topics Covered**
+- All 80 lessons, written to the same depth as the 3 free ones above
+- The complete source repository, one commit per lesson
+- Every later lesson builds on the code in this repo, so nothing is thrown away
 
-* **Advanced Kubernetes:** K3d internals, API server tuning, and eBPF networking on low resources.  
-* **GitOps Patterns:** Sync waves, app-of-apps, and resolving dependency hell without heavy UIs.  
-* **Infrastructure as Data:** Crossplane provider families, Composition Functions in Python, and XRDs.  
-* **Multi-Tenancy:** Virtual Clusters (vCluster) vs. Namespace isolation and "Scale-to-Zero" architectures.  
-* **Progressive Delivery:** Blue/Green and Canary deployments using Argo Rollouts.  
-* **Portal Engineering:** Building a custom IDP interface with FastAPI and React.
+### [Read the free lessons first →](https://systemdrd.com/courses/system-design-architecting-enterprise/?utm_source=github&utm_medium=readme&utm_campaign=architecting-enterprise-platforms-on-local-systems)
 
-### **Prerequisites**
+---
 
-* **Hardware:** A computer with exactly **8GB RAM** (Strictly enforced. 4GB Swap required).  
-* **Software:** Docker Desktop (or Rancher Desktop), VS Code.  
-* **Knowledge:** Comfortable with terminal/CLI, basic Python, and understanding of JSON/YAML.
-
-
-**Course Structure**
-
-The course flows logically from the bottom up—starting with the raw compute substrate and layering abstractions until we reach the developer interface.
-
-* **Module 1: The Substrate (Lessons 1-12)** - Designing a memory-efficient Kubernetes foundation using K3d and Cilium.  
-* **Module 2: The Control Plane (Lessons 13-25)** - Establishing the GitOps engine with ArgoCD to manage the platform itself.  
-* **Module 3: Infrastructure as Code (Lessons 26-45)** - Building the provisioning engine with Crossplane and Python logic.  
-* **Module 4: The Tenancy Model (Lessons 46-60)** - Implementing hard isolation using vClusters for tenant environments.  
-* **Module 5: Progressive Delivery (Lessons 61-72)** - Managing safe deployments with Argo Rollouts.  
-* **Module 6: The Interface (Lessons 73-82)** - Creating the "Golden Path" with a custom Python/React Portal.  
-* **Module 7: Day 2 Operations (Lessons 83-90)** - Chaos engineering, cost monitoring, and the final Capstone integration.
+Part of [SystemDR](https://systemdrd.com/courses/?utm_source=github&utm_medium=readme&utm_campaign=architecting-enterprise-platforms-on-local-systems) — hands-on engineering courses where you build the system, break it, and fix it. [All courses](https://systemdrd.com/courses/?utm_source=github&utm_medium=readme&utm_campaign=architecting-enterprise-platforms-on-local-systems) · [Free lessons across every course](https://systemdrd.com/trial-lessons/?utm_source=github&utm_medium=readme&utm_campaign=architecting-enterprise-platforms-on-local-systems)
